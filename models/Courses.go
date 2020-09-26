@@ -1,13 +1,9 @@
 package models
 
-import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
-)
-
 // Courses ...
 
 type Courses struct {
-	ID    primitive.ObjectID `json:"id"`
-	grado int8               `json:"grado"`
-	letra string             `json:"letra"`
+	Grado         int8   `json:"grado"`
+	Letra         string `json:"letra"`
+	id_estudiante *int   `json:"id_estudiante"`
 }
