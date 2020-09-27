@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/GraderUN/ClassroomManagement/models"
-	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -226,9 +225,16 @@ func GetAllAssignedCoursesof(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	vars := mux.Vars(r)
-	courseid := vars["courseid"]
-	filter := bson.M{"curso": courseid}
+
+	//define filter
+	var id models.IDType
+	reqBody, _ := ioutil.ReadAll(r.Body)
+	err = json.Unmarshal(reqBody, &id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	filter := bson.M{"curso": id.Key}
 	var assignations []*models.AssignedClassroom
 	collection := client.Database("GraderDB").Collection("AssignedClassroom")
 	cur, err := collection.Find(context.TODO(), filter)
