@@ -15,13 +15,20 @@ func apiStatus(w http.ResponseWriter, r *http.Request) {
 // HandleRequest ..
 func HandleRequest() {
 	myRouter := mux.NewRouter().StrictSlash(true)
+	//test
 	myRouter.HandleFunc("/", apiStatus)
+
+	//basic crud
 	myRouter.HandleFunc("/create-course", createCourse).Methods("POST")
 	myRouter.HandleFunc("/courses", GetAllCourses).Methods("GET")
 	myRouter.HandleFunc("/create-classroom", createClassroom).Methods("POST")
 	myRouter.HandleFunc("/classrooms", GetAllClassrooms).Methods("GET")
 	myRouter.HandleFunc("/assign-classroom", AssignClassroom).Methods("POST")
 	myRouter.HandleFunc("/assignations", GetAllAssignedCourses).Methods("GET")
+
+	//complexrequest
+	myRouter.HandleFunc("/assignations/:courseid", GetAllAssignedCoursesof).Methods("GET")
+
 	fmt.Println("Port 8080 is listening")
 	log.Fatal(http.ListenAndServe(":8080", myRouter))
 }

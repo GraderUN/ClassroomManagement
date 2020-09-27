@@ -6,7 +6,8 @@ import (
 
 // AssignedClassroom ..
 type AssignedClassroom struct {
-	Course   primitive.ObjectID `json:"id"`
-	Letra    primitive.ObjectID `json:"letra"`
+	Course   primitive.ObjectID `json:"curso"`
+	Salon    primitive.ObjectID `json:"salon"`
 	Profesor int                `json:"profesor"`
+	Horario  string             `json:"horario"`
 }
