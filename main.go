@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ClassroomManagements/controller"
+	"github.com/GraderUN/ClassroomManagement/controller"
 )
 
 func main() {

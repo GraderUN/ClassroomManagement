@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"ClassroomManagements/models"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/GraderUN/ClassroomManagement/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -37,6 +37,62 @@ func createCourse(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	insertResult, err := collection.InsertOne(ctx, courses)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
+	w.WriteHeader(http.StatusCreated)
+}
+
+func createClassroom(w http.ResponseWriter, r *http.Request) {
+	clientOptions := options.Client().ApplyURI(uri)
+	client, err := mongo.Connect(ctx, clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var classroom models.Classroom
+	collection := client.Database("GraderDB").Collection("Courses")
+	reqBody, _ := ioutil.ReadAll(r.Body)
+
+	err = json.Unmarshal(reqBody, &classroom)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	insertResult, err := collection.InsertOne(ctx, classroom)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
+	w.WriteHeader(http.StatusCreated)
+}
+
+func AssignClassroom(w http.ResponseWriter, r *http.Request) {
+	clientOptions := options.Client().ApplyURI(uri)
+	client, err := mongo.Connect(ctx, clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var asignation models.AssignedClassroom
+	collection := client.Database("GraderDB").Collection("Courses")
+	reqBody, _ := ioutil.ReadAll(r.Body)
+
+	err = json.Unmarshal(reqBody, &asignation)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	insertResult, err := collection.InsertOne(ctx, asignation)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,4 +137,80 @@ func GetAllCourses(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(courses)
+}
+
+func GetAllClassrooms(w http.ResponseWriter, r *http.Request) {
+	clientOptions := options.Client().ApplyURI(uri)
+	client, err := mongo.Connect(ctx, clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var classrooms []*models.Classroom
+	collection := client.Database("GraderDB").Collection("Courses")
+	cur, err := collection.Find(context.TODO(), bson.D{{}})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for cur.Next(context.TODO()) {
+
+		// create a value into which the single document can be decoded
+		var s models.Classroom
+		err := cur.Decode(&s)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		classrooms = append(classrooms, &s)
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(classrooms)
+}
+
+func GetAllAssignedCourses(w http.ResponseWriter, r *http.Request) {
+	clientOptions := options.Client().ApplyURI(uri)
+	client, err := mongo.Connect(ctx, clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var assignations []*models.AssignedClassroom
+	collection := client.Database("GraderDB").Collection("Courses")
+	cur, err := collection.Find(context.TODO(), bson.D{{}})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for cur.Next(context.TODO()) {
+
+		// create a value into which the single document can be decoded
+		var s models.AssignedClassroom
+		err := cur.Decode(&s)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		assignations = append(assignations, &s)
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(assignations)
 }
