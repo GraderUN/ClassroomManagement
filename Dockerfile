@@ -5,7 +5,7 @@ ENV GO111MODULE=on
 # Add Maintainer Info
 LABEL maintainer="Sanhernandezmon <sanhernandezmon@unal.edu.co>"
 
-WORKDIR go/src/github.com/GraderUN/ClassroomManagement
+WORKDIR /go/src/github.com/GraderUN/ClassroomManagement
 
 COPY . .
 
