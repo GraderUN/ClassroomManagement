@@ -9,6 +9,10 @@ LABEL maintainer="Sanhernandezmon <sanhernandezmon@unal.edu.co>"
 COPY go.mod go.sum ./
 
 # Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
+RUN go get -d -v ./
+RUN go install -v ./
+
+RUN go.mod download
 
 WORKDIR /go/src/github.com/GraderUN/ClassroomManagement
 
