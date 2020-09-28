@@ -11,11 +11,12 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 var collection *mongo.Collection
 var ctx = context.TODO()
-var uri = "mongodb+srv://Sanhernandezmon:Shm1qazz@realmcluster.xofvc.mongodb.net/GraderDB?retryWrites=true&w=majority"
+var uri = os.Getenv("DB_CONN")
 
 func createCourse(w http.ResponseWriter, r *http.Request) {
 	clientOptions := options.Client().ApplyURI(uri)
