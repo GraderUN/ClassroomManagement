@@ -1,0 +1,224 @@
+swagger: "2.0"
+info:
+  description: "This is a sample the description of the classroom managment microservice from Grader app "
+  version: "1.0.0"
+  title: "Swagger productsstore"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "sanhernandezmon@unal.edu.co"
+host: "productsstore.swagger.io"
+basePath: "/v2"
+tags:
+- name: "courses"
+- name: "classrooms"
+- name: "assignations"
+  description: "Assign classrooms to courses in the school user of GraderApp"
+  externalDocs:
+    description: "Find out more about our store"
+    url: "http://swagger.io"
+schemes:
+- "https"
+- "http"
+paths:
+  /course:
+    post:
+      tags:
+      - "courses"
+      summary: "Create course"
+      operationId: "createCourse"
+      produces:
+      - "boolean"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created course object"
+        required: true
+        schema:
+          $ref: '#/definitions/Courses'
+      responses:
+        default:
+          description: "successful operation"
+    get:
+      tags:
+      - "courses"
+      summary: "get all courses"
+      operationId: "GetAllCourses"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Update category object"
+        required: true
+        schema:
+          $ref: '#/definitions/Courses'
+      responses:
+        default:
+          description: "successful operation"      
+  /classroom:
+    post:
+      tags:
+      - "classrooms"
+      summary: "Create course"
+      operationId: "createClassroom"
+      produces:
+      - "boolean"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created course object"
+        required: true
+        schema:
+          $ref: '#/definitions/Classroom'
+      responses:
+        default:
+          description: "successful operation"
+    get:
+      tags:
+      - "classrooms"
+      summary: "get all courses"
+      operationId: "GetAllClassrooms"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Update category object"
+        required: true
+        schema:
+          $ref: '#/definitions/Classroom'
+      responses:
+        default:
+          description: "successful operation"      
+  /assignations:
+    post:
+      tags:
+      - "assignations"
+      summary: "Create course"
+      operationId: "AssignClassroom"
+      produces:
+      - "boolean"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created course object"
+        required: true
+        schema:
+          $ref: '#/definitions/Classroom'
+      responses:
+        default:
+          description: "successful operation"
+    get:
+      tags:
+      - "assignations"
+      summary: "get all courses"
+      operationId: "GetAllAssignedCourses"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Update category object"
+        required: true
+        schema:
+          $ref: '#/definitions/Classroom'
+      responses:
+        default:
+          description: "successful operation"      
+  
+  /assignations/course/{cursoID}:
+    get:
+      tags:
+      - "assignations"
+      summary: "Get assigned classroom to the course"
+      description: ""
+      operationId: "getcategoriesByID"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "cursoID"
+        in: "path"
+        description: "The name that needs to be fetched. Use products1 for testing. "
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/Assignation'
+
+  /assignations/classroom/{salonID}:
+    get:
+      tags:
+      - "assignations"
+      summary: "Get assigned courses to the classroom"
+      description: ""
+      operationId: "GetAllAssignedCoursesof"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "salonID"
+        in: "path"
+        description: "The name that needs to be fetched. Use products1 for testing. "
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/Assignation'
+
+definitions:
+  Courses:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      grado:
+        type: "integer"
+        format: "int8"
+      letra:
+        type: "string"
+      id_estudiante:
+        type: "array"
+        items:
+          type: "string"
+    xml:
+      name: "Courses"
+  
+  
+  Classroom:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      capacidad:
+        type: "integer"
+        format: "int32"
+      description:
+        type: "string"
+    xml:
+      name: "Classroom"
+  
+  Assignation:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      curso:
+        type: "string"
+      salon:
+        type: "string"
+      profesor:
+        type: "string"
+      horario:
+        type: "string"
+    xml:
+      name: "Classroom"
+  
+  

@@ -1,5 +1,5 @@
 package models
 
 type IDType struct {
-	Key string `json:"curso"`
+	Key string `json:"key"`
 }
