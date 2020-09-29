@@ -3,6 +3,6 @@ package models
 //Type ...
 
 type Classroom struct {
-	Capacidad   int    `json:"capacity"`
+	Capacidad   int    `json:"capacidad"`
 	Description string `json:"description"`
 }
