@@ -216,7 +216,7 @@ func GetAllAssignedCourses(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(assignations)
 }
 
-func GetAllAssignedCoursesof(w http.ResponseWriter, r *http.Request) {
+func GetAssignationsbycourse(w http.ResponseWriter, r *http.Request) {
 	clientOptions := options.Client().ApplyURI(uri)
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
@@ -260,7 +260,7 @@ func GetAllAssignedCoursesof(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(assignations)
 }
 
-func GetAllAssignedClassroomof(w http.ResponseWriter, r *http.Request) {
+func GetAssignationsbyclassroom(w http.ResponseWriter, r *http.Request) {
 	clientOptions := options.Client().ApplyURI(uri)
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
@@ -275,6 +275,49 @@ func GetAllAssignedClassroomof(w http.ResponseWriter, r *http.Request) {
 	callID := vars["classroomid"]
 
 	filter := bson.M{"salon": callID}
+	var assignations []*models.AssignedClassroom
+	collection := client.Database("GraderDB").Collection("AssignedClassroom")
+	cur, err := collection.Find(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for cur.Next(context.TODO()) {
+
+		// create a value into which the single document can be decoded
+		var s models.AssignedClassroom
+		err := cur.Decode(&s)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		assignations = append(assignations, &s)
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(assignations)
+}
+
+func GetAssignationsbyproffesor(w http.ResponseWriter, r *http.Request) {
+	clientOptions := options.Client().ApplyURI(uri)
+	client, err := mongo.Connect(ctx, clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	vars := mux.Vars(r)
+	callID := vars["proffesorid"]
+
+	filter := bson.M{"profesor": callID}
 	var assignations []*models.AssignedClassroom
 	collection := client.Database("GraderDB").Collection("AssignedClassroom")
 	cur, err := collection.Find(context.TODO(), filter)
