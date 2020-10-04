@@ -7,4 +7,5 @@ type AssignedClassroom struct {
 	Salon    string `json:"salon"`
 	Profesor string `json:"profesor"`
 	Horario  string `json:"horario"`
+	Materia  string `json:"materia"`
 }

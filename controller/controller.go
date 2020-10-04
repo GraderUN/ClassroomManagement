@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/GraderUN/ClassroomManagement/models"
+	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -35,7 +36,6 @@ func createCourse(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(reqBody, &courses)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
 	}
 	insertResult, err := collection.InsertOne(ctx, courses)
 	if err != nil {
@@ -43,7 +43,7 @@ func createCourse(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("Inserted a single course: ", insertResult.InsertedID)
-	w.WriteHeader(http.StatusCreated)
+	fmt.Fprint(w, "Inserted a single course: ", insertResult.InsertedID)
 }
 
 func createClassroom(w http.ResponseWriter, r *http.Request) {
@@ -63,7 +63,6 @@ func createClassroom(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(reqBody, &classroom)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
 	}
 	insertResult, err := collection.InsertOne(ctx, classroom)
 	if err != nil {
@@ -71,7 +70,7 @@ func createClassroom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("Inserted a single classroom: ", insertResult.InsertedID)
-	w.WriteHeader(http.StatusCreated)
+	fmt.Fprint(w, "Inserted a single classroom: ", insertResult.InsertedID)
 }
 
 func AssignClassroom(w http.ResponseWriter, r *http.Request) {
@@ -91,7 +90,6 @@ func AssignClassroom(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(reqBody, &asignation)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
 	}
 	insertResult, err := collection.InsertOne(ctx, asignation)
 	if err != nil {
@@ -99,7 +97,8 @@ func AssignClassroom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("Asigned a single classroom to a single course: ", insertResult.InsertedID)
-	w.WriteHeader(http.StatusCreated)
+	fmt.Fprint(w, "Asigned a single classroom: ", asignation.Salon, " to a single"+
+		"course: ", asignation.Curso, " ", insertResult.InsertedID)
 }
 
 func GetAllCourses(w http.ResponseWriter, r *http.Request) {
@@ -150,6 +149,7 @@ func GetAllClassrooms(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	var classrooms []*models.Classroom
 	collection := client.Database("GraderDB").Collection("Clasroom")
 	cur, err := collection.Find(context.TODO(), bson.D{{}})
@@ -228,14 +228,10 @@ func GetAllAssignedCoursesof(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//define filter
-	var id models.IDType
-	reqBody, _ := ioutil.ReadAll(r.Body)
-	err = json.Unmarshal(reqBody, &id)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	filter := bson.M{"curso": id.Key}
+	vars := mux.Vars(r)
+	callID := vars["courseid"]
+
+	filter := bson.M{"curso": callID}
 	var assignations []*models.AssignedClassroom
 	collection := client.Database("GraderDB").Collection("AssignedClassroom")
 	cur, err := collection.Find(context.TODO(), filter)
@@ -275,15 +271,10 @@ func GetAllAssignedClassroomof(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	//define filter
-	var id models.IDType
-	reqBody, _ := ioutil.ReadAll(r.Body)
-	err = json.Unmarshal(reqBody, &id)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	filter := bson.M{"salon": id.Key}
+	vars := mux.Vars(r)
+	callID := vars["classroomid"]
+
+	filter := bson.M{"salon": callID}
 	var assignations []*models.AssignedClassroom
 	collection := client.Database("GraderDB").Collection("AssignedClassroom")
 	cur, err := collection.Find(context.TODO(), filter)
