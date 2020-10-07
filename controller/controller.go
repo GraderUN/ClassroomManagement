@@ -151,13 +151,13 @@ func GetAllClassrooms(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var classrooms []*models.Classroom
-	collection := client.Database("GraderDB").Collection("Clasroom")
-	cur, err := collection.Find(context.TODO(), bson.D{{}})
+	collection := client.Database("GraderDB").Collection("Classroom")
+	cur, err := collection.Find(ctx, bson.D{{}})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for cur.Next(context.TODO()) {
+	for cur.Next(ctx) {
 
 		// create a value into which the single document can be decoded
 		var s models.Classroom
