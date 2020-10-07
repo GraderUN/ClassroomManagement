@@ -29,7 +29,7 @@ func HandleRequest() {
 	//complexrequest
 	myRouter.HandleFunc("/assignations/course/{courseid}", GetAssignationsbycourse).Methods("GET")
 	myRouter.HandleFunc("/assignations/classroom/{classroomid}", GetAssignationsbyclassroom).Methods("GET")
-	myRouter.HandleFunc("/assignations/proffesor/{proffesorid}", GetAssignationsbyproffesor).Methods("GET")
+	myRouter.HandleFunc("/assignations/professor/{professorid}", GetAssignationsbyproffesor).Methods("GET")
 
 	fmt.Println("Port 8080 is listening")
 	log.Fatal(http.ListenAndServe(":8080", myRouter))

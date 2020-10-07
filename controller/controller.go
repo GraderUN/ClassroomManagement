@@ -315,7 +315,7 @@ func GetAssignationsbyproffesor(w http.ResponseWriter, r *http.Request) {
 	}
 
 	vars := mux.Vars(r)
-	callID := vars["proffesorid"]
+	callID := vars["professorid"]
 
 	filter := bson.M{"profesor": callID}
 	var assignations []*models.AssignedClassroom
