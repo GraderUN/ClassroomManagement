@@ -1,8 +1,13 @@
 package models
 
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
 //Type ...
 
 type Classroom struct {
-	Capacidad   int    `json:"capacidad"`
-	Description string `json:"description"`
+	Id          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Capacidad   int                `json:"capacidad"`
+	Description string             `json:"description"`
 }

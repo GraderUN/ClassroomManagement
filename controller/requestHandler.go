@@ -31,6 +31,9 @@ func HandleRequest() {
 	myRouter.HandleFunc("/assignations/classroom/{classroomid}", GetAssignationsbyclassroom).Methods("GET")
 	myRouter.HandleFunc("/assignations/professor/{professorid}", GetAssignationsbyproffesor).Methods("GET")
 
+	//delete
+	myRouter.HandleFunc("/assignations/{classid}", DeleteAssignemet).Methods("DELETE")
+
 	fmt.Println("Port 8080 is listening")
 	log.Fatal(http.ListenAndServe(":8080", myRouter))
 

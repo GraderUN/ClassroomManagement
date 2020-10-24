@@ -7,6 +7,7 @@ import (
 	"github.com/GraderUN/ClassroomManagement/models"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"io/ioutil"
@@ -344,4 +345,41 @@ func GetAssignationsbyproffesor(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(assignations)
+}
+
+func DeleteAssignemet(w http.ResponseWriter, r *http.Request) {
+	clientOptions := options.Client().ApplyURI(uri)
+	client, err := mongo.Connect(ctx, clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	vars := mux.Vars(r)
+	callID := vars["classid"]
+
+	idPrimitive, err := primitive.ObjectIDFromHex(callID)
+	if err != nil {
+		log.Fatal("primitive.ObjectIDFromHex ERROR:", err)
+	} else {
+
+	}
+	filter := bson.M{"_id": idPrimitive}
+	collection := client.Database("GraderDB").Collection("AssignedClassroom")
+	res, err := collection.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if res.DeletedCount == 0 {
+		fmt.Println("DeleteOne() document not found:", res)
+	} else {
+		// Print the results of the DeleteOne() method
+		fmt.Println("DeleteOne Result:", res)
+		fmt.Fprint(w, "successfully deleted")
+
+	}
+	w.WriteHeader(http.StatusAccepted)
 }
