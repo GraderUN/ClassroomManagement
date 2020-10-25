@@ -383,3 +383,40 @@ func DeleteAssignemet(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusAccepted)
 }
+
+func DeleteClassroom(w http.ResponseWriter, r *http.Request) {
+	clientOptions := options.Client().ApplyURI(uri)
+	client, err := mongo.Connect(ctx, clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	vars := mux.Vars(r)
+	callID := vars["classroomid"]
+
+	idPrimitive, err := primitive.ObjectIDFromHex(callID)
+	if err != nil {
+		log.Fatal("primitive.ObjectIDFromHex ERROR:", err)
+	} else {
+
+	}
+	filter := bson.M{"_id": idPrimitive}
+	collection := client.Database("GraderDB").Collection("Classroom")
+	res, err := collection.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if res.DeletedCount == 0 {
+		fmt.Println("DeleteOne() document not found:", res)
+	} else {
+		// Print the results of the DeleteOne() method
+		fmt.Println("DeleteOne Result:", res)
+		fmt.Fprint(w, "successfully deleted")
+
+	}
+	w.WriteHeader(http.StatusAccepted)
+}
